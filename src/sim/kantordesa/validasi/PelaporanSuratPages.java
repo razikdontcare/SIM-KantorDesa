@@ -55,26 +55,26 @@ import org.jfree.data.general.DefaultPieDataset;
  *
  * @author krisna 
  */
-public class PelaporanSuratPages extends javax.swing.JFrame {
+public class PelaporanSuratPages extends javax.swing.JFrame { //kelas membuat antarmuka GUI
 
-    private javax.swing.table.DefaultTableModel model;
-    Connection c = koneksi.getConnection();
+    private javax.swing.table.DefaultTableModel model; //Model untuk JTable
+    Connection c = koneksi.getConnection(); //koneksi ke database
 
-    public PelaporanSuratPages() {
-        initComponents();
-        showLineChart();
-        createPieChart();
+    public PelaporanSuratPages() { //konstraktor
+        initComponents(); //GUI
+        showLineChart(); //line chart
+        createPieChart(); //pie chart
 
         model = new javax.swing.table.DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 8;
+                return true;
             }
         };
 
         tbHistory.setModel(model);
 
-        model.addColumn("No.");
+        model.addColumn("No."); //menambahkan kolom baru
         model.addColumn("Tipe Surat");
         model.addColumn("Total Pengajuan");
 
