@@ -2,12 +2,10 @@ package sim.kantordesa.validasi;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -18,7 +16,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,9 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-//import javax.swing.text.Document;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -648,37 +643,9 @@ public class PelaporanSuratPages extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat membuat laporan: " + e.getMessage());
-        } // TODO add your handling code here:
-    }// GEN-LAST:event_UnduhLaporanActionPerformed
-    // private void initComponents() {
-    // chartContainer = new javax.swing.JPanel();
-    // setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    // setTitle("Line Chart");
-    //
-    // chartContainer.setLayout(new java.awt.BorderLayout());
-    // javax.swing.GroupLayout layout = new
-    // javax.swing.GroupLayout(getContentPane());
-    // getContentPane().setLayout(layout);
-    // layout.setHorizontalGroup(
-    // layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-    // .addComponent(chartContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-    // javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-    // );
-    // layout.setVerticalGroup(
-    // layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-    // .addComponent(chartContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-    // javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-    // );
-    //
-    // pack();
-    // }
+        }
+    }
 
-    // public static void main(String args[]) {
-    // java.awt.EventQueue.invokeLater(() -> {
-    // new PelaporanSuratPages().setVisible(true);
-    // });
-    // }
-    //
     private javax.swing.JPanel chartContainer;
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton6ActionPerformed

@@ -42,8 +42,6 @@ public class ValidationPages extends javax.swing.JFrame {
 
         jTable1.setModel(model);
 
-        // "No", "Status", "Diterima tgl.", "Nama Pemohon", "Perihal", "Val. Sekdes",
-        // "Val. Kades", "Aksi"
         model.addColumn("No.");
         model.addColumn("Nomor Surat");
         model.addColumn("Nama Pemohon");
