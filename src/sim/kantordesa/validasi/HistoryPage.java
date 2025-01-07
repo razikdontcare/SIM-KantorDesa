@@ -27,7 +27,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.GridBagLayout;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import sim.kantordesa.mailtemplate.MailData;
 import sim.kantordesa.mailtemplate.mailform;
@@ -41,6 +40,12 @@ public class HistoryPage extends javax.swing.JFrame {
     private javax.swing.table.DefaultTableModel model;
     Connection c = koneksi.getConnection();
 
+    // get content on panel to display on dashboard
+    public JPanel getContentPanel() {
+        return (JPanel) this.getContentPane();
+    }
+
+    // constructor
     public HistoryPage() {
         initComponents();
 
@@ -83,10 +88,7 @@ public class HistoryPage extends javax.swing.JFrame {
         commentColumn.setCellRenderer(new TextAreaRenderer());
     }
 
-    public JPanel getContentPanel() {
-        return (JPanel) this.getContentPane();
-    }
-
+    // rendering table value
     public void setTableAction() { //function query get data from db
         model.getDataVector().removeAllElements();//remove value on table
         model.fireTableDataChanged();
@@ -123,19 +125,18 @@ public class HistoryPage extends javax.swing.JFrame {
         tbHistory.getColumn("Aksi").setCellEditor(new ButtonPanelEditor(tbHistory));
     }
 
-    // Custom cell renderer for text wrapping
+    // Custom cell renderer for text wrapping (comment)
     public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
 
         private static final int FIXED_WIDTH = 200; // Fixed width in pixels
 
         public TextAreaRenderer() {
-            setLineWrap(true);
-            setWrapStyleWord(true);
+            setLineWrap(true); //wrapping text
+            setWrapStyleWord(true); //wrapping by word
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             setText(value != null ? value.toString() : "");
             setSize(FIXED_WIDTH, Short.MAX_VALUE);
 
@@ -177,6 +178,7 @@ public class HistoryPage extends javax.swing.JFrame {
         }
     }
 
+    // adjust column width by content
     public static void adjustColumnWidths(JTable table) {
         for (int column = 0; column < table.getColumnCount(); column++) {
             TableColumn tableColumn = table.getColumnModel().getColumn(column);
@@ -185,6 +187,7 @@ public class HistoryPage extends javax.swing.JFrame {
         }
     }
 
+    // get max preferred width from header and content
     private static int getMaxPreferredWidth(JTable table, int column) { //width adjusting with comparing max widht on header and value
         int maxWidth = 0;
         TableColumn tableColumn = table.getColumnModel().getColumn(column);
@@ -204,9 +207,10 @@ public class HistoryPage extends javax.swing.JFrame {
         return maxWidth + 10; // Add some margin
     }
 
+    // rendering frame button in aksi column
     class ButtonPanelRenderer extends ButtonPanel implements TableCellRenderer {
 
-        public ButtonPanelRenderer() { //action button style
+        public ButtonPanelRenderer() { //constructor
             setBackground(Color.white);
             setOpaque(true);
         }
@@ -219,6 +223,7 @@ public class HistoryPage extends javax.swing.JFrame {
             boolean statusLead = "Accept".equals(table.getValueAt(row, 6));
             boolean isValidated = (statusValidation && statusLead);
 
+            //accepted mail will rendering download button and hide edit button
             downloadButton.setVisible(isValidated);
             editButton.setVisible(!isValidated);
 
@@ -239,12 +244,12 @@ public class HistoryPage extends javax.swing.JFrame {
 
     }
 
+    // button panel editor (interaction)
     class ButtonPanelEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 
         ButtonPanel panel;
         JTable table;
 
-//        public ButtonPanelEditor(JButton editButton, JButton deleteButton, JButton downloadButton) {
         public ButtonPanelEditor(JTable table) { //constructor 
             this.table = table;
             panel = new ButtonPanel();
@@ -255,10 +260,12 @@ public class HistoryPage extends javax.swing.JFrame {
 
         }
 
+        // edit rejected mail
         private void handleEditButtonAction() {
             System.out.println("Edit Button diklik");
         }
 
+        // delete selected mail
         private void handleDeleteButtonAction() {
             System.out.println("Delete Button diklik");
             int row = table.getSelectedRow();
@@ -272,7 +279,7 @@ public class HistoryPage extends javax.swing.JFrame {
                     "Konfirmasi Hapus",
                     JOptionPane.YES_NO_OPTION
             );
-
+            //query delete mail from database
             if (confirm == JOptionPane.YES_OPTION) {
                 String query = "DELETE FROM mail_content WHERE mail_id = ?";
                 try {
@@ -288,21 +295,22 @@ public class HistoryPage extends javax.swing.JFrame {
                 }
             }
         }
-
+        
+        // download accepted mail
         private void handleDownloadButtonAction() {
             System.out.println("Download Button diklik");
             mailform mf = new mailform();
 
+            //get needed value from table
             int row = table.getSelectedRow();
             String mailTypeString = (String) table.getValueAt(row, 4);
             String mailId = (String) table.getValueAt(row, 8);
             Integer mailTypeId = null;
-            
-            System.out.println(mailId);
 
             try {
                 Connection conn = koneksi.getConnection();
 
+                //get mail type id from mail type name in table
                 String getMailTypeIdQuery = "SELECT mail_type_id FROM `mail_type` where type_name = \"" + mailTypeString + "\";";
                 Statement s = conn.createStatement();
                 ResultSet rs1 = s.executeQuery(getMailTypeIdQuery);
@@ -310,13 +318,12 @@ public class HistoryPage extends javax.swing.JFrame {
                     mailTypeId = rs1.getInt("mail_type_id");
                 }
 
-
+                //get mail data 
                 String getMailDataQuery = "SELECT c.applicant_name, c.mulai_berlaku, c.tgl_akhir, c.mail_number, c.keperluan, cr.tempat_tanggal_lahir, cr.usia, cr.warga_negara, cr.agama, cr.jenis_kelamin, cr.pekerjaan, cr.alamat, cr.no_ktp, cr.no_kk, cr.gol_darah, t.mail_type_id  FROM mail_content as c INNER JOIN civil_registry cr ON c.no_ktp = cr.no_ktp INNER JOIN mail_type t ON c.mail_type_id = t.mail_type_id WHERE mail_id = \"" + mailId + "\";";
                 ResultSet rs2 = s.executeQuery(getMailDataQuery);
 
+                //save mail data to MailData
                 while (rs2.next()) {
-//                    System.out.println("hello world");
-//                    System.out.println("nama pemohon : " + rs2.getString("applicant_name"));
                     MailData.put("nama", rs2.getString("applicant_name"));
                     MailData.put("ttl", rs2.getString("tempat_tanggal_lahir"));
                     MailData.put("umur", rs2.getString("usia"));
@@ -333,11 +340,9 @@ public class HistoryPage extends javax.swing.JFrame {
                     MailData.put("gol_darah", rs2.getString("gol_darah"));
                     MailData.put("mail_number", rs2.getString("mail_number"));
                 }
-                
-                System.out.println(mailTypeId + " 2");
-
+                //generate pdf with signature
                 mf.generatePDF(mailTypeId, conn, mailTypeString, true);
-                
+
                 rs1.close();
                 rs2.close();
                 s.close();
@@ -353,8 +358,7 @@ public class HistoryPage extends javax.swing.JFrame {
         }
 
         @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-                int column) {
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,int column) {
             boolean statusValidation = "Accept".equals(table.getValueAt(row, 5));
             boolean statusLead = "Accept".equals(table.getValueAt(row, 6));
 
@@ -405,7 +409,7 @@ public class HistoryPage extends javax.swing.JFrame {
             // Add button panel
             add(buttonPanel);
         }
-    }
+    }   
 
     //filtering history 
     private void filter(String query) {
